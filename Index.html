@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Тест-котел: Геометрия ведьмы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        body {
+            background: #0a0a1a;
+            font-family: 'Courier New', 'VT323', monospace;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* пиксельный узор */
+            background-image: 
+                linear-gradient(rgba(80, 0, 80, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(80, 0, 80, 0.2) 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+
+        /* главный котел */
+        .cauldron {
+            max-width: 1000px;
+            width: 100%;
+            background: #0f0f0c;
+            border: 4px solid #5f2a5f;
+            box-shadow: 10px 10px 0 #1f3a1f, 0 0 0 4px #2e0a2e inset;
+            padding: 20px;
+            transition: all 0.2s step-end;
+        }
+
+        /* пиксельные плашки */
+        .pixel-header {
+            border-bottom: 3px solid #6b8c42;
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 28px;
+            letter-spacing: 2px;
+            color: #b0ff80;
+            text-shadow: 3px 3px 0 #3c1a5f;
+            background: #1a1a1a;
+            display: inline-block;
+            padding: 8px 16px;
+            border: 2px solid #8f5e8f;
+            box-shadow: 4px 4px 0 #2d4f1a;
+            font-weight: normal;
+        }
+
+        .magic-badge {
+            font-size: 14px;
+            background: #2d1b2d;
+            color: #c39aff;
+            padding: 4px 8px;
+            border: 1px solid #6f4f6f;
+            margin-top: 12px;
+            display: inline-block;
+        }
+
+        /* вопросы - пиксельные секции */
+        .question-block {
+            background: #14100e;
+            border-left: 12px solid #3f2a3f;
+            margin-bottom: 24px;
+            padding: 16px;
+            border-right: 2px solid #3b2b2b;
+            border-top: 2px solid #3b2b2b;
+            box-shadow: 3px 3px 0 #263f1a;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e2e6b0;
+            margin-bottom: 12px;
+            background: #1c1420;
+            padding: 6px 10px;
+            display: inline-block;
+            border: 1px solid #735f73;
+            font-family: inherit;
+        }
+
+        /* варианты ответов пиксельные кнопки / радиогруппа */
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e1a1c;
+            padding: 6px 14px;
+            border: 2px solid #4a2e4a;
+            cursor: pointer;
+            transition: 0.05s linear;
+            font-size: 16px;
+        }
+
+        .option.selected {
+            background: #2a4430;
+            border: 2px solid #8ad46e;
+            box-shadow: 0 0 0 1px #aaff99;
+            color: #f0ffcc;
+        }
+
+        input[type="radio"], input[type="text"] {
+            accent-color: #6e2c6e;
+            font-family: monospace;
+        }
+
+        input[type="text"] {
+            background: #010101;
+            border: 2px solid #633a63;
+            padding: 8px 12px;
+            color: #c6ff8a;
+            font-size: 16px;
+            width: 260px;
+            max-width: 100%;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #a6e67a;
+            background: #1c1f10;
+        }
+
+        .score-area {
+            margin: 30px 0 20px;
+            background: #000000b3;
+            padding: 16px;
+            border: 3px solid #64b83e;
+            text-align: center;
+        }
+
+        .result-message {
+            font-size: 22px;
+            color: #e0f0b0;
+            text-shadow: 2px 2px 0 #0a1f0a;
+            background: #1b2013;
+            padding: 14px;
+            border: 2px solid #9e6d9e;
+            margin-top: 15px;
+            word-break: break-word;
+        }
+
+        button {
+            background: #281e28;
+            border: 3px solid #75b043;
+            color: #c2ff8e;
+            font-size: 24px;
+            font-family: monospace;
+            font-weight: bold;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: 0.05s linear;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        button:active {
+            background: #0f2e0f;
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .score-number {
+            font-size: 42px;
+            font-weight: bold;
+            background: #010001;
+            display: inline-block;
+            padding: 8px 20px;
+            border: 3px solid #b87eff;
+            color: #46d646;
+            font-family: monospace;
+        }
+
+        /* миксуем ведьмовские мелочи */
+        hr {
+            border: 2px solid #424d2c;
+            margin: 10px 0;
+        }
+
+        footer {
+            text-align: right;
+            margin-top: 10px;
+            color: #56a34a;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .cauldron {
+                padding: 12px;
+            }
+            .question-text {
+                font-size: 15px;
+            }
+            .option {
+                font-size: 13px;
+                padding: 4px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="cauldron">
+    <div class="pixel-header">
+        <h1>⚗️ ТЕСТ-ЗЕЛЬЕ ⚗️</h1>
+        <div class="magic-badge">✧ ГЕОМЕТРИЯ ТЬМЫ ✧</div>
+    </div>
+
+    <div id="testContainer">
+        <!-- сюда динамически загружаются перемешанные вопросы -->
+    </div>
+
+    <div class="score-area" id="scorePanel" style="display: none;">
+        <div>🧪 ТВОЙ КОТЁЛ ЗНАНИЙ 🧪</div>
+        <div class="score-number" id="scoreValue">0</div>
+        <div class="result-message" id="resultMessage"></div>
+    </div>
+
+    <button id="checkBtn">✨ ПРОВЕРИТЬ ЗЕЛЬЕ ✨</button>
+    <footer>◈ вопросы меняются местами при загрузке ◈</footer>
+</div>
+
+<script>
+    // ---------- ВОПРОСЫ С ВВОДОМ ОТВЕТА (по 2 балла) ----------
+    const fillInQuestionsData = [
+        { text: "Геометрическая фигура, не имеющая измерений (ни длины, ни ширины, ни высоты), называется ________.", correctAnswer: "точка" },
+        { text: "Угол, который меньше 90°, называется ________ .", correctAnswer: "острый" },
+        { text: "Через любые ________ точки можно провести прямую, и притом только одну.", correctAnswer: "две" },
+        { text: "Два угла называются смежными, если у них одна сторона ______, а две другие являются ______ друг друга.", correctAnswer: "общая, продолжениями" },
+        { text: "Луч - это часть прямой, имеющая ________ , но не имеющая конца.", correctAnswer: "начало" },
+        { text: "Угол, градусная мера которого равна 90°, называется ________ .", correctAnswer: "прямой" },
+        { text: "Угол, который больше 90°, но меньше 180°, называется ________ .", correctAnswer: "тупой" },
+        { text: "Если один из смежных углов равен 70°, то второй угол равен ________ °.", correctAnswer: "110" },
+        { text: "Часть прямой, ограниченная двумя точками, называется ________ .", correctAnswer: "отрезок" },
+        { text: "Вертикальные углы всегда ________ .", correctAnswer: "равны" },
+        { text: "Биссектриса угла - это луч, который ______ угол на два ______ угла.", correctAnswer: "делит, равных" }
+    ];
+
+    // ---------- ВОПРОСЫ С ВЫБОРОМ (по 2 балла) ----------
+    const choiceQuestionsData = [
+        { text: "Какая фигура не имеет концов?", options: ["Отрезок", "Луч", "Прямая", "Ломаная"], correct: 2, correctLetter: "в" }, // Прямая
+        { text: "Сколько общих точек могут иметь две различные прямые на плоскости?", options: ["Только одну", "Ни одной или одну", "Только две", "Одну или две"], correct: 1, correctLetter: "б" },
+        { text: "Как называются углы, у которых одна сторона общая, а две другие являются продолжениями одна другой?", options: ["Вертикальные", "Смежные", "Соответственные", "Односторонние"], correct: 1, correctLetter: "б" },
+        { text: "Если угол равен 120°, то смежный с ним угол:", options: ["120°", "60°", "180°", "240°"], correct: 1, correctLetter: "б" },
+        { text: "На даны прямые AB и CD, которые пересекаются в точке O. Углы AOC и BOD - это:", options: ["Смежные", "Вертикальные", "Прямые", "Развернутые"], correct: 1, correctLetter: "б" },
+        { text: "Какой угол называют развернутым?", options: ["Угол, равный 90°", "Угол, равный 180°", "Угол, равный 360°", "Угол, равный 0°"], correct: 1, correctLetter: "б" },
+        { text: "Какое из следующих утверждений верно?", options: ["Через одну точку можно провести только одну прямую", "Два различных луча с общим началом всегда задают угол", "Сумма смежных углов равна 90°", "Длина отрезка может быть отрицательной"], correct: 1, correctLetter: "б" }
+    ];
+
+    // объединим, но для отображения будем хранить типы
+    let allQuestions = [];
+
+    function buildFullQuestionSet() {
+        // создаем массив всех вопросов с указанием типа
+        const fillItems = fillInQuestionsData.map((q, idx) => ({
+            id: `fill_${idx}`,
+            type: 'fill',
+            text: q.text,
+            correctAnswer: q.correctAnswer.toLowerCase().trim(),
+            points: 2,
+            userAnswer: '',
+        }));
+
+        const choiceItems = choiceQuestionsData.map((q, idx) => ({
+            id: `choice_${idx}`,
+            type: 'choice',
+            text: q.text,
+            options: [...q.options],
+            correctIndex: q.correct,
+            points: 2,
+            userSelected: null, // индекс выбранного варианта
+        }));
+
+        return [...fillItems, ...choiceItems];
+    }
+
+    // Функция перемешивания (фишер-йетс)
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    // рендер теста в контейнер
+    let currentQuestions = [];
+
+    function renderTest() {
+        const container = document.getElementById('testContainer');
+        container.innerHTML = '';
+        currentQuestions.forEach((q, idx) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-block';
+            qDiv.setAttribute('data-qid', q.id);
+
+            const questionP = document.createElement('div');
+            questionP.className = 'question-text';
+            questionP.innerText = `${idx+1}. ${q.text}`;
+            qDiv.appendChild(questionP);
+
+            if (q.type === 'fill') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = 'Введите ответ (строчные буквы)...';
+                input.value = q.userAnswer || '';
+                input.style.width = '80%';
+                input.style.marginTop = '8px';
+                input.addEventListener('input', (e) => {
+                    q.userAnswer = e.target.value;
+                });
+                qDiv.appendChild(input);
+                // мини подсказка про формат
+                const hintSpan = document.createElement('div');
+                hintSpan.style.fontSize = '12px';
+                hintSpan.style.color = '#967896';
+                hintSpan.innerText = '✧ ответ(ы) через запятую / слово ✧';
+                qDiv.appendChild(hintSpan);
+            } 
+            else if (q.type === 'choice') {
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                q.options.forEach((opt, optIdx) => {
+                    const optLabel = document.createElement('label');
+                    optLabel.className = 'option';
+                    if (q.userSelected === optIdx) optLabel.classList.add('selected');
+                    
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `q_${q.id}`;
+                    radio.value = optIdx;
+                    radio.checked = (q.userSelected === optIdx);
+                    radio.addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            q.userSelected = optIdx;
+                            // обновить визуальное выделение для всех опций этого вопроса
+                            const allOptions = optionsDiv.querySelectorAll('.option');
+                            allOptions.forEach((optEl, idxOpt) => {
+                                if (idxOpt === optIdx) optEl.classList.add('selected');
+                                else optEl.classList.remove('selected');
+                            });
+                        }
+                    });
+                    
+                    const spanText = document.createElement('span');
+                    spanText.innerText = `${String.fromCharCode(97+optIdx)}) ${opt}`;
+                    optLabel.appendChild(radio);
+                    optLabel.appendChild(spanText);
+                    optionsDiv.appendChild(optLabel);
+                });
+                qDiv.appendChild(optionsDiv);
+            }
+            container.appendChild(qDiv);
+        });
+    }
+
+    // Оценка ответов
+    function evaluateScore() {
+        let totalScore = 0;
+        for (let q of currentQuestions) {
+            if (q.type === 'fill') {
+                let userRaw = (q.userAnswer || "").trim().toLowerCase();
+                // нормализация: убираем лишние пробелы, для сложных ответов вида "общая, продолжениями" или "делит, равных"
+                let correctRaw = q.correctAnswer.toLowerCase();
+                // допускаем варианты: ответ может содержать запятые и пробелы. Для корректного сравнения:
+                // Разделим правильный ответ на части через запятую и сравним с введенным, убрав пробелы
+                let isMatch = false;
+                if (correctRaw.includes(',')) {
+                    // многословный ответ: "общая, продолжениями"
+                    const correctParts = correctRaw.split(',').map(s => s.trim());
+                    const userParts = userRaw.split(',').map(s => s.trim());
+                    if (correctParts.length === userParts.length) {
+                        let allMatch = true;
+                        for (let i=0; i<correctParts.length; i++) {
+                            if (correctParts[i] !== userParts[i]) {
+                                allMatch = false;
+                                break;
+                            }
+                        }
+                        isMatch = allMatch;
+                    } else {
+                        isMatch = false;
+                    }
+                } else {
+                    // для обычных слов, либо для чисел
+                    // Также обрабатываем "110" или другие числа
+                    isMatch = (userRaw === correctRaw);
+                }
+                // Дополнительные синонимы: "точка" - точно, "острый" и т.д. Для "равны" можно принять "равны"
+                // если не совпадает, но для "равны" — проверим
+                if (!isMatch && correctRaw === "равны" && (userRaw === "равны" || userRaw === "равны." || userRaw === "равны.")) isMatch = true;
+                if (!isMatch && correctRaw === "110" && userRaw === "110") isMatch = true;
+                if (!isMatch && correctRaw === "начало" && userRaw === "начало") isMatch = true;
+                if (!isMatch && correctRaw === "отрезок" && userRaw === "отрезок") isMatch = true;
+                if (!isMatch && correctRaw === "точка" && userRaw === "точка") isMatch = true;
+                if (!isMatch && correctRaw === "острый" && userRaw === "острый") isMatch = true;
+                if (!isMatch && correctRaw === "две" && userRaw === "две") isMatch = true;
+                if (!isMatch && correctRaw === "прямой" && userRaw === "прямой") isMatch = true;
+                if (!isMatch && correctRaw === "тупой" && userRaw === "тупой") isMatch = true;
+                // дополнительно: "делит, равных" — более строго
+                if (correctRaw === "делит, равных") {
+                    const normalizedUser = userRaw.replace(/\s+/g, ' ').trim();
+                    if (normalizedUser === "делит, равных" || normalizedUser === "делит равных" || normalizedUser === "делит, равные" || normalizedUser === "делит равные") {
+                        isMatch = true;
+                    }
+                }
+                if (isMatch) totalScore += q.points;
+            } 
+            else if (q.type === 'choice') {
+                if (q.userSelected !== null && q.userSelected === q.correctIndex) {
+                    totalScore += q.points;
+                }
+            }
+        }
+        return totalScore;
+    }
+
+    // формирование сообщения
+    function getMessageByScore(score) {
+        if (score >= 0 && score < 10) {
+            return "🧙‍♀️ Кто-то не думает... Давай по новой 🧪";
+        } else if (score >= 10 && score < 14) {
+            return "📖 Для этой темы - это плохо, прочти теорию более вдумчиво... 🌙";
+        } else if (score >= 14 && score < 20) {
+            return "⚗️ Ну ты же можешь лучше, еще раз) 🔮";
+        } else if (score >= 20 && score <= 29) {
+            return "✨ Ты смело можешь двигаться дальше! ✨ Ты справился с котлом знаний!";
+        } else {
+            return "⭐ Ты справился блестяще! Небывалый эликсир!";
+        }
+    }
+
+    // отобразить результат и баллы
+    function showScoreAndMessage(score) {
+        const scorePanel = document.getElementById('scorePanel');
+        const scoreValueSpan = document.getElementById('scoreValue');
+        const resultMsgDiv = document.getElementById('resultMessage');
+        scoreValueSpan.innerText = score;
+        resultMsgDiv.innerText = getMessageByScore(score);
+        scorePanel.style.display = 'block';
+        // скроллим к плате
+        scorePanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // инициализация теста: перемешать вопросы и сбросить ответы
+    function initTest() {
+        const baseSet = buildFullQuestionSet();
+        // сброс пользовательских ответов
+        baseSet.forEach(q => {
+            if (q.type === 'fill') q.userAnswer = '';
+            if (q.type === 'choice') q.userSelected = null;
+        });
+        currentQuestions = shuffleArray([...baseSet]);
+        renderTest();
+        // прячем панель результатов при новом тесте
+        const scorePanel = document.getElementById('scorePanel');
+        scorePanel.style.display = 'none';
+    }
+
+    // Проверка и показ результата (без перезагрузки)
+    function checkAndShow() {
+        // собираем последние значения из полей ввода перед оценкой (на всякий случай принудительно из DOM)
+        const container = document.getElementById('testContainer');
+        const fillInputs = container.querySelectorAll('.question-block input[type="text"]');
+        let fillIdx = 0;
+        for (let q of currentQuestions) {
+            if (q.type === 'fill') {
+                if (fillInputs[fillIdx]) {
+                    q.userAnswer = fillInputs[fillIdx].value;
+                }
+                fillIdx++;
+            }
+        }
+        // для choice уже привязаны через радиокнопки, но перепроверять не нужно, тк userSelected обновляется через change
+        const score = evaluateScore();
+        showScoreAndMessage(score);
+    }
+
+    // событие на кнопку
+    document.getElementById('checkBtn').addEventListener('click', () => {
+        checkAndShow();
+    });
+
+    // перезапуск? можно сделать двойной клик по лого "обновить" но для удобства добавим кнопку невидимую? нет, просто инициализация
+    // плюс добавим кнопку сброса/перемешивания заново
+    const resetBtn = document.createElement('button');
+    resetBtn.innerText = '🌀 ПЕРЕМЕШАТЬ КОТЁЛ 🌀';
+    resetBtn.style.marginTop = '10px';
+    resetBtn.style.backgroundColor = '#1e2c1a';
+    resetBtn.style.border = '3px solid #916d91';
+    resetBtn.addEventListener('click', () => {
+        initTest();
+        const panel = document.getElementById('scorePanel');
+        panel.style.display = 'none';
+    });
+    const checkBtnParent = document.getElementById('checkBtn').parentNode;
+    checkBtnParent.insertBefore(resetBtn, document.getElementById('checkBtn').nextSibling);
+
+    // ПЕРВИЧНЫЙ ЗАПУСК - случайный порядок вопросов
+    initTest();
+</script>
+</body>
+</html>
